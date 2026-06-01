@@ -13,8 +13,6 @@ class Category:
     Атрибуты экземпляра:
         name (str): Название категории.
         description (str): Описание категории.
-        products (List[Product]): Список товаров в категории.
-        product_count (int): Количество товаров в данной категории.
     """
 
     category_count = 0
@@ -31,13 +29,24 @@ class Category:
         """
         self.name = name
         self.description = description
-        self.products: List[Product] = []
-        self.product_count = 0  # Локальный счётчик товаров в этой категории
+        self.__products: List[Product] = []  # Приватный атрибут
         Category.category_count += 1
 
         if products:
             for product in products:
                 self.add_product(product)
+
+    @property
+    def products(self) -> str:
+        """
+        Геттер для списка товаров.
+        Возвращает строку с информацией о каждом товаре по шаблону:
+        "Название продукта, X руб. Остаток: X шт.\n"
+        """
+        result = ""
+        for product in self.__products:
+            result += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
+        return result.strip()  # Убираем лишний перенос в конце
 
     def add_product(self, product: Product) -> None:
         """
@@ -46,8 +55,7 @@ class Category:
         Args:
             product (Product): Объект товара для добавления.
         """
-        self.products.append(product)
-        self.product_count += 1      # Увеличиваем локальный счётчик
+        self.__products.append(product)
         Category.product_count += 1  # Увеличиваем глобальный счётчик
 
     def __repr__(self) -> str:
@@ -57,4 +65,4 @@ class Category:
         Returns:
             str: Информация о категории и количестве товаров.
         """
-        return f"Category(name={self.name}, products_count={len(self.products)})"
+        return f"Category(name={self.name}, products_count={len(self.__products)})"

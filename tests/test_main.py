@@ -1,4 +1,3 @@
-import pytest
 from src.product import Product
 from src.category import Category
 from src.utils import load_data
@@ -16,7 +15,7 @@ def test_category_creation():
     """Проверка создания категории."""
     c = Category("Электроника", "Описание категории")
     assert c.name == "Электроника"
-    assert c.products == []
+    assert c.products == ""
 
 
 def test_add_product_to_category():
@@ -24,8 +23,7 @@ def test_add_product_to_category():
     p = Product("Мышка", "Описание", 500.0, 1)
     c = Category("Периферия", "Описание")
     c.add_product(p)
-    assert len(c.products) == 1
-    assert c.products[0].name == "Мышка"
+    assert "Мышка" in c.products
 
 
 def test_category_count():
@@ -43,7 +41,7 @@ def test_product_count_in_category():
     p2 = Product("Т2", "Оп", 20.0, 2)
     c.add_product(p1)
     c.add_product(p2)
-    assert c.product_count == 2
+    assert len(c._Category__products) == 2
 
 
 def test_load_data_empty():
