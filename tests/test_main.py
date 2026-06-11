@@ -1,59 +1,104 @@
-from src.product import Product
-from src.category import Category
-from src.utils import load_data
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import pytest
+from main import Product, Smartphone, LawnGrass, Category
 
 
-def test_product_creation():
-    """Проверка создания товара и его атрибутов."""
-    p = Product("Тест", "Описание", 100.0, 10)
-    assert p.name == "Тест"
-    assert p.price == 100.0
-    assert p.quantity == 10
+def test_smartphone_creation():
+    """Тест создания объекта Smartphone"""
+    phone = Smartphone(
+        "Samsung Galaxy S23 Ultra",
+        "256GB, Серый цвет, 200MP камера",
+        180000.0,
+        5,
+        "высокая",
+        "S23 Ultra",
+        "256GB",
+        "серый"
+    )
+    assert phone.name == "Samsung Galaxy S23 Ultra"
+    assert phone.price == 180000.0
+    assert phone.quantity == 5
+    assert phone.efficiency == "высокая"
+    assert phone.model == "S23 Ultra"
+    assert phone.memory == "256GB"
+    assert phone.color == "серый"
+
+
+def test_lawn_grass_creation():
+    """Тест создания объекта LawnGrass"""
+    grass = LawnGrass(
+        "Газонная трава",
+        "Элитная трава для газона",
+        500.0,
+        10,
+        "Россия",
+        "7 дней",
+        "зеленый"
+    )
+    assert grass.name == "Газонная трава"
+    assert grass.price == 500.0
+    assert grass.quantity == 10
+    assert grass.country == "Россия"
+    assert grass.germination_period == "7 дней"
+    assert grass.color == "зеленый"
 
 
 def test_product_str():
-    """Проверка строкового отображения продукта (__str__)."""
-    p = Product("Ноутбук", "Мощный", 150000.0, 5)
-    # Предполагаем формат: "Название, Цена руб. Остаток: Кол-во"
-    # Отредактируй строку ниже, если в твоем __str__ другой формат!
-    expected = f"{p.name}, {p.price} руб. Остаток: {p.quantity}"
-    assert str(p) == expected
+    """Тест строкового представления продукта"""
+    product = Product("Test", "Test description", 100.0, 5)
+    assert str(product) == "Test, 100.0 руб. Остаток: 5 шт."
 
 
-def test_product_add():
-    """Проверка сложения стоимости продуктов (__add__)."""
-    p1 = Product("Мышь", "Беспроводная", 2000.0, 3)   # Итого: 6000
-    p2 = Product("Клавиатура", "Механическая", 5000.0, 2)  # Итого: 10000
-    total = p1 + p2
-    assert total == 16000.0
+def test_category_str():
+    """Тест строкового представления категории"""
+    product1 = Product("P1", "Desc1", 100.0, 2)
+    product2 = Product("P2", "Desc2", 200.0, 3)
+    category = Category("Test", "Test desc", [product1, product2])
+    assert str(category) == "Test, количество продуктов: 5 шт."
 
 
-def test_category_creation():
-    """Проверка создания категории."""
-    c = Category("Электроника", "Описание категории")
-    assert c.name == "Электроника"
-    # Исправлено: проверяем, что продукты — это список (даже пустой)
-    assert isinstance(c.products, list) or c.products == []
+def test_category_add_product():
+    """Тест добавления продукта в категорию"""
+    product = Product("P1", "Desc1", 100.0, 2)
+    category = Category("Test", "Test desc", [])
+    category.add_product(product)
+    assert any(product.name in s for s in category.products) # проверка через @property (список строк)
+    # так как @property возвращает список строк, проверим наличие строки
+    assert str(product) in category.products
 
 
-def test_add_product_to_category():
-    """Проверка добавления товара в категорию."""
-    p = Product("Мышка", "Описание", 500.0, 1)
-    c = Category("Периферия", "Описание")
-    c.add_product(p)
-    # Проверяем наличие объекта товара в списке категории
-    assert p in c.products
+def test_category_add_invalid_product():
+    """Тест: добавление не-продукта вызывает TypeError"""
+    category = Category("Test", "Test desc", [])
+    with pytest.raises(TypeError):
+        category.add_product("Я просто строка, я не продукт")
 
 
-def test_category_count():
-    """Проверка счетчика категорий."""
-    Category.category_count = 0
-    Category("Кат 1", "Описание")
-    Category("Кат 2", "Описание")
-    assert Category.category_count == 2
+def test_smartphone_addition():
+    """Тест сложения двух смартфонов"""
+    phone1 = Smartphone("S1", "Desc1", 100.0, 5, "High", "M1", "256GB", "Black")
+    phone2 = Smartphone("S2", "Desc2", 200.0, 3, "High", "M2", "512GB", "White")
+    result = phone1 + phone2
+    assert result.price == 300.0
+    assert result.quantity == 8
+    assert isinstance(result, Smartphone)
 
 
-def test_load_data_empty():
-    """Проверка загрузки данных из несуществующего файла."""
-    result = load_data("non_existent_file.json")
-    assert result == []
+def test_lawn_grass_addition():
+    """Тест сложения двух газонных трав"""
+    grass1 = LawnGrass("G1", "Desc1", 10.0, 10, "RU", "7d", "Green")
+    grass2 = LawnGrass("G2", "Desc2", 20.0, 5, "US", "10d", "Green")
+    result = grass1 + grass2
+    assert result.price == 30.0
+    assert result.quantity == 15
+    assert isinstance(result, LawnGrass)
+
+
+def test_different_classes_addition_error():
+    """Тест: сложение смартфона и газонной травы вызывает TypeError"""
+    phone = Smartphone("S1", "Desc1", 100.0, 5, "High", "M1", "256GB", "Black")
+    grass = LawnGrass("G1", "Desc1", 10.0, 10, "RU", "7d", "Green")
+    with pytest.raises(TypeError):
+        phone + grass
