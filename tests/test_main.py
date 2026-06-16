@@ -1,8 +1,12 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
-from main import Product, Smartphone, LawnGrass, Category
+
+# Добавляем корень проекта в sys.path, чтобы pytest видел src
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.product import Product, Smartphone, LawnGrass
+from src.category import Category
 
 
 def test_smartphone_creation():
@@ -56,6 +60,7 @@ def test_category_str():
     product1 = Product("P1", "Desc1", 100.0, 2)
     product2 = Product("P2", "Desc2", 200.0, 3)
     category = Category("Test", "Test desc", [product1, product2])
+    # Строка должна точно совпадать с тем, что возвращает Category.__str__
     assert str(category) == "Test, количество продуктов: 5 шт."
 
 
@@ -64,8 +69,7 @@ def test_category_add_product():
     product = Product("P1", "Desc1", 100.0, 2)
     category = Category("Test", "Test desc", [])
     category.add_product(product)
-    assert any(product.name in s for s in category.products) # проверка через @property (список строк)
-    # так как @property возвращает список строк, проверим наличие строки
+    # Проверяем, что объект продукта реально лежит в списке (у тебя там список объектов)
     assert str(product) in category.products
 
 
@@ -102,3 +106,14 @@ def test_different_classes_addition_error():
     grass = LawnGrass("G1", "Desc1", 10.0, 10, "RU", "7d", "Green")
     with pytest.raises(TypeError):
         phone + grass
+
+
+def test_category_iteration():
+    """Тест итерации по категории"""
+    product1 = Product("P1", "Desc1", 100.0, 2)
+    product2 = Product("P2", "Desc2", 200.0, 3)
+    category = Category("Test", "Test desc", [product1, product2])
+    products_list = list(category)
+    assert len(products_list) == 2
+    assert products_list[0] is product1
+    assert products_list[1] is product2
