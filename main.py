@@ -1,44 +1,78 @@
-from src.product import Product, Smartphone, LawnGrass
+from src.product import Smartphone, LawnGrass
 from src.category import Category
 
-if __name__ == '__main__':
-    # Создаем базовые продукты
-    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
-    product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
-    product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
+# Создаем категории
+smartphones_category = Category("Смартфоны")
+grass_category = Category("Трава")
 
-    print(str(product1))
-    print(str(product2))
-    print(str(product3))
+# Создаем продукты
+samsung = Smartphone(
+    "Samsung Galaxy S23 Ultra", "Флагманский смартфон",
+    180000.0, 5, 4.5, "S23 Ultra", 512, "Черный"
+)
+iphone = Smartphone(
+    "iPhone 15", "Новейший айфон",
+    210000.0, 8, 4.8, "15 Pro", 256, "Титан"
+)
+xiaomi = Smartphone(
+    "Xiaomi Redmi Note 11", "Бюджетный смартфон",
+    31000.0, 14, 4.2, "Note 11", 128, "Синий"
+)
 
-    # Создаем категорию и добавляем туда продукты
-    category1 = Category(
-        "Смартфоны",
-        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-        [product1, product2, product3]
-    )
+grass1 = LawnGrass(
+    "Газонная трава", "Зеленая трава",
+    500.0, 10, "Россия", 7, "Зеленый"
+)
+grass2 = LawnGrass(
+    "Газонная трава 2", "Выносливая трава",
+    450.0, 15, "США", 5, "Темно-зеленый"
+)
 
-    print(str(category1))
-    print(category1.products)
+# Наполняем категорию смартфонами
+smartphones_category.add_product(samsung)
+smartphones_category.add_product(iphone)
+smartphones_category.add_product(xiaomi)
 
-    # Проверяем сложение продуктов одного класса
-    print(product1 + product2)
-    print(product1 + product3)
-    print(product2 + product3)
+# Наполняем категорию травой (теперь две травы, как нужно)
+grass_category.add_product(grass1)
+grass_category.add_product(grass2)
 
-    # Проверяем сложение разных классов (должна быть ошибка TypeError)
-    smartphone = Smartphone("S1", "Desc", 100.0, 5, "High", "M1", "256GB", "Black")
-    grass = LawnGrass("G1", "Desc", 10.0, 10, "RU", "7d", "Green")
+# Демонстрация защиты от неправильных типов (обязательно для задания!)
+print("--- Проверка защиты типа ---")
+try:
+    smartphones_category.add_product("Это не смартфон, а просто строка")  # type: ignore[arg-type]
+except TypeError as e:
+    print(f"Поймали ошибку: {e}")
 
-    try:
-        smartphone + grass
-        print("ОШИБКА: Сложение разных классов не вызвало TypeError!")
-    except TypeError as e:
-        print(f"Ожидаемая ошибка: {e}")
+print("---------------------------\n")
 
-    # Проверяем добавление не-продукта в категорию
-    try:
-        category1.add_product("Я не продукт")
-        print("ОШИБКА: Добавление строки не вызвало TypeError!")
-    except TypeError as e:
-        print(f"Ожидаемая ошибка: {e}")
+# Демонстрация сложения объектов
+print("--- Проверка сложения ---")
+total_smartphones = samsung + iphone
+print(f"Результат сложения смартфонов: {total_smartphones}")
+
+total_grass = grass1 + grass2  # Складываем две разные травы
+print(f"Результат сложения травы: {total_grass}")
+
+# Попытка сложить разные типы (должна вызвать ошибку)
+print("Пробуем сложить смартфон и траву...")
+try:
+    error_sum = samsung + grass1
+except TypeError as e:
+    print(f"Поймали ожидаемую ошибку при сложении разных типов: {e}")
+
+print("---------------------------\n")
+
+# Вывод всех продуктов в категориях
+# Важно: здесь используется свойство products, которое возвращает одну строку с переносами
+print("--- Содержимое категорий ---")
+print("Смартфоны:")
+print(smartphones_category.products)
+print("\nТрава:")
+print(grass_category.products)
+print("----------------------------\n")
+
+# Проверка работы классовых счётчиков (обязательно для задания!)
+print("--- Статистика системы ---")
+print(f"Всего категорий: {Category.total_categories}")
+print(f"Всего товаров: {Category.total_products}")
