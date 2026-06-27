@@ -6,19 +6,15 @@ class Product:
         self.quantity = quantity
 
     def __str__(self):
-        # Формат должен совпадать с тем, что ждёт тест: без description, с нужным текстом
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __repr__(self):
         return f"Product(name='{self.name}', price={self.price}, quantity={self.quantity})"
 
     def __add__(self, other):
-        if type(self) is not type(other):
+        if not isinstance(other, Product):
             raise TypeError(f"Нельзя складывать {type(self).__name__} и {type(other).__name__}")
-
-        # Для базового класса мы просто суммируем цену и количество
-        # Но наследники переопределят это, чтобы передать свои параметры
-        return type(self)(
+        return Product(
             self.name,
             self.description,
             self.price + other.price,
@@ -34,28 +30,15 @@ class Smartphone(Product):
         self.memory = memory
         self.color = color
 
-    def __str__(self) -> str:
-        # Разбиваем строку, чтобы не превысить лимит E501
-        return (
-            f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт., "
-            f"эффективность: {self.efficiency}, модель: {self.model}, "
-            f"память: {self.memory} ГБ, цвет: {self.color}"
-        )
+    def __str__(self):
+        return (f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт., "
+                f"эффективность: {self.efficiency}, модель: {self.model}, "
+                f"память: {self.memory} ГБ, цвет: {self.color}")
 
     def __add__(self, other):
-        if type(self) is not type(other):
+        if not isinstance(other, Smartphone):
             raise TypeError(f"Нельзя складывать {type(self).__name__} и {type(other).__name__}")
-
-        return type(self)(
-            self.name,
-            self.description,
-            self.price + other.price,
-            self.quantity + other.quantity,
-            self.efficiency,
-            self.model,
-            self.memory,
-            self.color
-        )
+        return super().__add__(other)
 
 
 class LawnGrass(Product):
@@ -66,20 +49,11 @@ class LawnGrass(Product):
         self.color = color
 
     def __str__(self):
-        # Так как базовый __str__ теперь без description, собираем базовую часть явно
-        base_str = f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
-        return f"{base_str}, страна: {self.country}, период прорастания: {self.germination_period}, цвет: {self.color}"
+        return (f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт., "
+                f"страна: {self.country}, период прорастания: {self.germination_period}, "
+                f"цвет: {self.color}")
 
     def __add__(self, other):
-        if type(self) is not type(other):
+        if not isinstance(other, LawnGrass):
             raise TypeError(f"Нельзя складывать {type(self).__name__} и {type(other).__name__}")
-
-        return type(self)(
-            self.name,
-            self.description,
-            self.price + other.price,
-            self.quantity + other.quantity,
-            self.country,
-            self.germination_period,
-            self.color
-        )
+        return super().__add__(other)

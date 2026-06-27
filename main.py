@@ -1,78 +1,100 @@
-from src.product import Smartphone, LawnGrass
+from src.product import Product, Smartphone, LawnGrass
 from src.category import Category
 
-# Создаем категории
-smartphones_category = Category("Смартфоны")
-grass_category = Category("Трава")
+smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "Флагманский смартфон", 120000, 10, 4.8, "S23 Ultra", 512, "Black")
+smartphone2 = Smartphone("iPhone 15", "Новинка от Apple", 100000, 5, 4.7, "15", 256, "Titanium")
+smartphone3 = Smartphone("Xiaomi Redmi Note 11", "Бюджетный смартфон", 20000, 20, 4.5, "Redmi Note 11", 128, "Blue")
 
-# Создаем продукты
-samsung = Smartphone(
-    "Samsung Galaxy S23 Ultra", "Флагманский смартфон",
-    180000.0, 5, 4.5, "S23 Ultra", 512, "Черный"
-)
-iphone = Smartphone(
-    "iPhone 15", "Новейший айфон",
-    210000.0, 8, 4.8, "15 Pro", 256, "Титан"
-)
-xiaomi = Smartphone(
-    "Xiaomi Redmi Note 11", "Бюджетный смартфон",
-    31000.0, 14, 4.2, "Note 11", 128, "Синий"
-)
+grass1 = LawnGrass("Газонная трава", "Семена газонной травы", 500, 50, "Голландия", 7, "Зелёный")
+grass2 = LawnGrass("Мятлик луговой", "Семена мятлика", 400, 30, "Германия", 10, "Зелёный")
 
-grass1 = LawnGrass(
-    "Газонная трава", "Зеленая трава",
-    500.0, 10, "Россия", 7, "Зеленый"
-)
-grass2 = LawnGrass(
-    "Газонная трава 2", "Выносливая трава",
-    450.0, 15, "США", 5, "Темно-зеленый"
-)
+smartphones = Category("Смартфоны", "Все современные смартфоны")
+grasses = Category("Трава", "Семена для газона")
 
-# Наполняем категорию смартфонами
-smartphones_category.add_product(samsung)
-smartphones_category.add_product(iphone)
-smartphones_category.add_product(xiaomi)
+smartphones.add_product(smartphone1)
+smartphones.add_product(smartphone2)
+smartphones.add_product(smartphone3)
 
-# Наполняем категорию травой (теперь две травы, как нужно)
-grass_category.add_product(grass1)
-grass_category.add_product(grass2)
+grasses.add_product(grass1)
+grasses.add_product(grass2)
 
-# Демонстрация защиты от неправильных типов (обязательно для задания!)
-print("--- Проверка защиты типа ---")
-try:
-    smartphones_category.add_product("Это не смартфон, а просто строка")  # type: ignore[arg-type]
-except TypeError as e:
-    print(f"Поймали ошибку: {e}")
+if __name__ == '__main__':
+    smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5,
+                         "S23 Ultra", 256, "Серый")
+    smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
+    smartphone3 = Smartphone("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14, 90.3, "Note 11", 1024, "Синий")
 
-print("---------------------------\n")
+    print(smartphone1.name)
+    print(smartphone1.description)
+    print(smartphone1.price)
+    print(smartphone1.quantity)
+    print(smartphone1.efficiency)
+    print(smartphone1.model)
+    print(smartphone1.memory)
+    print(smartphone1.color)
 
-# Демонстрация сложения объектов
-print("--- Проверка сложения ---")
-total_smartphones = samsung + iphone
-print(f"Результат сложения смартфонов: {total_smartphones}")
+    print(smartphone2.name)
+    print(smartphone2.description)
+    print(smartphone2.price)
+    print(smartphone2.quantity)
+    print(smartphone2.efficiency)
+    print(smartphone2.model)
+    print(smartphone2.memory)
+    print(smartphone2.color)
 
-total_grass = grass1 + grass2  # Складываем две разные травы
-print(f"Результат сложения травы: {total_grass}")
+    print(smartphone3.name)
+    print(smartphone3.description)
+    print(smartphone3.price)
+    print(smartphone3.quantity)
+    print(smartphone3.efficiency)
+    print(smartphone3.model)
+    print(smartphone3.memory)
+    print(smartphone3.color)
 
-# Попытка сложить разные типы (должна вызвать ошибку)
-print("Пробуем сложить смартфон и траву...")
-try:
-    error_sum = samsung + grass1
-except TypeError as e:
-    print(f"Поймали ожидаемую ошибку при сложении разных типов: {e}")
+    grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    grass2 = LawnGrass("Газонная трава 2", "Выносливая трава", 450.0, 15, "США", "5 дней", "Темно-зеленый")
 
-print("---------------------------\n")
+    print(grass1.name)
+    print(grass1.description)
+    print(grass1.price)
+    print(grass1.quantity)
+    print(grass1.country)
+    print(grass1.germination_period)
+    print(grass1.color)
 
-# Вывод всех продуктов в категориях
-# Важно: здесь используется свойство products, которое возвращает одну строку с переносами
-print("--- Содержимое категорий ---")
-print("Смартфоны:")
-print(smartphones_category.products)
-print("\nТрава:")
-print(grass_category.products)
-print("----------------------------\n")
+    print(grass2.name)
+    print(grass2.description)
+    print(grass2.price)
+    print(grass2.quantity)
+    print(grass2.country)
+    print(grass2.germination_period)
+    print(grass2.color)
 
-# Проверка работы классовых счётчиков (обязательно для задания!)
-print("--- Статистика системы ---")
-print(f"Всего категорий: {Category.total_categories}")
-print(f"Всего товаров: {Category.total_products}")
+    smartphone_sum = smartphone1 + smartphone2
+    print(smartphone_sum)
+
+    grass_sum = grass1 + grass2
+    print(grass_sum)
+
+    try:
+        invalid_sum = smartphone1 + grass1
+    except TypeError:
+        print("Возникла ошибка TypeError при попытке сложения")
+    else:
+        print("Не возникла ошибка TypeError при попытке сложения")
+
+    category_smartphones = Category("Смартфоны", "Высокотехнологичные смартфоны", [smartphone1, smartphone2])
+    category_grass = Category("Газонная трава", "Различные виды газонной травы", [grass1, grass2])
+
+    category_smartphones.add_product(smartphone3)
+
+    print(category_smartphones.products)
+
+    print(Category.product_count)
+
+    try:
+        category_smartphones.add_product("Not a product")
+    except TypeError:
+        print("Возникла ошибка TypeError при добавлении не продукта")
+    else:
+        print("Не возникла ошибка TypeError при добавлении не продукта")
