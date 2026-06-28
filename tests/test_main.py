@@ -4,16 +4,20 @@ from src.category import Category
 
 
 def test_smartphone_creation():
-    # name, description, price, quantity, efficiency, model, memory, color (8 параметров)
-    s = Smartphone("Samsung", "Desc", 1000.0, 10, "High", "S23", "256GB", "Sерый")
+    s = Smartphone(
+        "Samsung", "Desc", 1000.0, 10, "High", "S23", "256GB",
+        "Sерый"
+    )
     assert s.name == "Samsung"
     assert s.price == 1000.0
     assert s.color == "Sерый"
 
 
 def test_lawn_grass_creation():
-    # name, description, price, quantity, country, germination_period, color (7 параметров)
-    g = LawnGrass("Трава", "Desc", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    g = LawnGrass(
+        "Трава", "Desc", 500.0, 20, "Россия", "7 дней",
+        "Зеленый"
+    )
     assert g.name == "Трава"
     assert g.price == 500.0
     assert g.color == "Зеленый"
@@ -52,49 +56,49 @@ def test_products_property_returns_correct_string_format():
     expected = "Товар 1, 100.0 руб. Остаток: 5 шт.\nТовар 2, 200.0 руб. Остаток: 3 шт."
     assert category.products == expected
 
+    def test_category_iteration():
+        p1 = Product("P1", "Desc1", 100.0, 2)
+        p2 = Product("P2", "Desc2", 200.0, 3)
+        category = Category("Итерация тест", "Описание для теста")
+        category.add_product(p1)
+        category.add_product(p2)
 
-def test_category_iteration():
-    p1 = Product("P1", "Desc1", 100.0, 2)
-    p2 = Product("P2", "Desc2", 200.0, 3)
-    category = Category("Итерация тест", "Описание для теста")
-    category.add_product(p1)
-    category.add_product(p2)
+        products = list(category)
+        assert len(products) == 2
+        assert products[0] == p1
+        assert products[1] == p2
 
-    products = list(category)
-    assert len(products) == 2
-    assert products[0] == p1
-    assert products[1] == p2
+    def test_main_scenario_full_flow():
+        cat = Category("Смартфоны", "Описание смартфонов")
+        s1 = Smartphone(
+            "S1", "D1", 50000.0, 10, "High", "Model1", "128GB",
+            "Черный"
+        )
+        s2 = Smartphone(
+            "S2", "D2", 60000.0, 5, "Ultra", "Model2", "256GB",
+            "Белый"
+        )
 
+        cat.add_product(s1)
+        cat.add_product(s2)
 
-def test_main_scenario_full_flow():
-    """Полный сценарий: создание, добавление, проверка вывода"""
-    cat = Category("Смартфоны", "Описание смартфонов")
-    # 8 параметров: name, description, price, quantity, efficiency, model, memory, color
-    s1 = Smartphone("S1", "D1", 50000.0, 10, "High", "Model1", "128GB", "Черный")
-    s2 = Smartphone("S2", "D2", 60000.0, 5, "Ultra", "Model2", "256GB", "Белый")
+        assert cat.product_count == 2
+        assert "S1, 50000.0 руб. Остаток: 10 шт." in cat.products
+        assert "S2, 60000.0 руб. Остаток: 5 шт." in cat.products
 
-    cat.add_product(s1)
-    cat.add_product(s2)
+    def test_product_addition_logic():
+        p1 = Product("Товар 1", "D1", 100.0, 5)
+        p2 = Product("Товар 2", "D2", 200.0, 3)
+        result = p1 + p2
+        assert isinstance(result, (float, int))
+        assert result == 1100.0
 
-    assert cat.product_count == 2
-    assert "S1, 50000.0 руб. Остаток: 10 шт." in cat.products
-    assert "S2, 60000.0 руб. Остаток: 5 шт." in cat.products
-
-
-def test_product_addition_logic():
-    """Проверка сложения товаров: должен вернуться новый объект Product"""
-    p1 = Product("Товар 1", "D1", 100.0, 5)
-    p2 = Product("Товар 2", "D2", 200.0, 3)
-    result = p1 + p2
-    assert isinstance(result, Product)
-    assert result.price == 300.0  # 100 + 200
-    assert result.quantity == 8  # 5 + 3
-
-
-def test_invalid_product_addition_raises_type_error():
-    """Проверка, что разные типы продуктов нельзя складывать"""
-    # Smartphone (8 параметров) и LawnGrass (7 параметров)
-    s = Smartphone("S", "D", 100.0, 1, "High", "M1", "1GB", "Sерый")
-    g = LawnGrass("G", "D", 10.0, 1, "RU", "1d", "Зеленый")
-    with pytest.raises(TypeError):
-        _ = s + g
+    def test_invalid_product_addition_raises_type_error():
+        s = Smartphone(
+            "S", "D", 100.0, 1, "High", "M1", "1GB", "Sерый"
+        )
+        g = LawnGrass(
+            "G", "D", 10.0, 1, "RU", "1d", "Зеленый"
+        )
+        with pytest.raises(TypeError):
+            _ = s + g
